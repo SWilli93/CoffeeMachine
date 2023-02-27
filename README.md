@@ -54,3 +54,5 @@ Coffee: 76g
 Money: $2.5
 b. Once all resources have been deducted, tell the user “Here is your latte. Enjoy!”. If
 latte was their choice of drink.
+
+Credit to Dr Angela Yu and her 100 days of coding Udemy Course
