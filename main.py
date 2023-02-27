@@ -31,43 +31,48 @@ resources = {
     "coffee": 100,
 }
 
-#TODO 1: prompt user by asking what would you like?
 
-request = input("What would you like? ")
-
-
-# TODO 2: turn off the machine by typing off
-
-turn_on = True
-turn_off = False
-
-#TODO 3: print report
-
-
-report = print(resources)
-print(report)
-# '''this will be to compare ingredients'''
+#COFFEE MACHINES
 
 espresso, latte, cappuccino = [menu[v]["ingredients"] for v in menu]
 espresso_cost, latte_cost, cappuccino_cost = [menu[v]['cost'] for v in menu]
 espresso['milk'] = 0
+variable = ''
+request = input("What would you like? ")
+drink_cost = ''
+new_resources = {}
 
 
-#TODO 4 check resources sufficient
+def what_is(user_request):
+    global drink_cost
+    if user_request == 'espresso':
+        drink_cost = espresso_cost
+        return espresso, drink_cost
+    elif user_request == 'latte':
+        drink_cost = latte_cost
+        return latte, drink_cost
+    elif user_request == 'cappuccino':
+        drink_cost = cappuccino_cost
+        return cappuccino, drink_cost
+    elif user_request == 'report':
+        return resources, print(resources)
+    elif user_request == 'off':
+        return print('powering off')
+    else:
+        print("Please enter proper selection")
+        return False
 
 
-def is_enough(request):
-    global resources, espresso, latte, cappuccino
-    if int(resources['water']) - int(request['water']) <= 0:
-        return True
-    elif resources['milk'] - request['milk'] <= 0:
-        return True
-    elif resources['coffee'] - request['coffee'] <= 0:
-        return True
+def enough_resources(order):
+    orders = order[0]
+    if resources['water'] - orders['water'] >= 0 and resources['milk'] - orders['milk'] >= 0 and resources['coffee'] - orders['coffee'] >= 0:
+        new_resources['water'] = resources['water'] - orders['water']
+        new_resources['milk'] = resources['milk'] - orders['milk']
+        new_resources['coffee'] = resources['coffee'] - orders['coffee']
+        return True, new_resources
     else:
         return False
 
-#TODO 5 Process Coins
 
 def process_coins():
     """Returns the total calculated from coins inserted."""
@@ -78,52 +83,46 @@ def process_coins():
     total += int(input("how many pennies?: ")) * 0.01
     return total
 
-#todo 6 transaction successful
 
-def is_successful(money, drink):
-    change = money - drink
-    if money < drink:
+def is_successful(user_money, order):
+    change = user_money - order
+    if user_money < order:
         return print("insufficient funds"), False
-    elif money > drink:
-        answer = input("would you like change? y or n")
+    elif user_money > order:
+        answer = input("would you like change? y or n: ")
         if answer == 'y':
             return True, print(f"refund of ${change} incoming")
         else:
-            return print("thankyou have a great day"), True
+            user_money += change
+            return print("We appreciate your donation, standby for coffee"), True, user_money
     else:
         return True, print("coffee incoming")
 
 
-#todo 7: Make the coffee
+drink = what_is(request)
+if drink != False:
+    is_on = True
+    money = process_coins()
+    while is_on and is_successful(money, drink_cost) and enough_resources(drink):
+        print(resources)
+        print(new_resources)
+        print(money)
+        print('Enjoy your Coffee!')
+        break
 
 
-if is_successful() and is_enough():
-    # print(report)
-    # print(new_report)
 
 
-# def check_response(request):
-#     global resources, resources_left
-#     if request == "espresso":
-#         espresso["water"] -= 50
-#         espresso["coffee"] -= 18
-#         return resources_left
-#     elif request == "latte":
-#         resources["water"] -= 200
-#         resources["milk"] -= 150
-#         resources["coffee"] -= 24
-#         return resources
-#     elif request == "cappuccino":
-#         resources["water"] -= 250
-#         resources["milk"] -= 100
-#         resources["coffee"] -= 24
-#         return resources
-#     else:
-#         print("Please Enter Valid Selection")
-#     check_response(user_request)
-#
-#
-# check_response(user_request)
+
+
+
+
+
+
+
+
+
+
 
 
 
